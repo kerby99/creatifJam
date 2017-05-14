@@ -17,18 +17,21 @@ public class BlockAttack : StateBehavior<MoleEnemyController> {
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
     public void DoAttack(MoleEnemyController c, GameObject o) {
-        // TODO
+        // No attack
     }
 
     public void DoMove(MoleEnemyController c, GameObject o) {
-        // TODO
+        // No movement
     }
 
     public void OnEnter(MoleEnemyController c) {
-        // TODO
+        Debug.Log("[STATE]: Enter Block state");
+        c.isBlocking = true;
+        c.Invoke("StopBlocking", c.blockDuration); //Exit block state in x seconds
     }
 
     public void OnExit(MoleEnemyController c) {
-        // TODO
+        Debug.Log("[STATE]: Exit Block state");
+        c.isBlocking = false;
     }
 }

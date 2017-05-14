@@ -21,14 +21,21 @@ public class Look4player : StateBehavior<MoleEnemyController> {
     }
 
     public void DoMove(MoleEnemyController c, GameObject o){
+        // Look for player, can see only at specific distance
+        // If player is not in vision, do nothing (Yeah, that's kind of stupid behavior, but time is running low)
+        float distance = Mathf.Abs(o.transform.position.x - c.gameObject.transform.position.x);
+        if(distance > c.seePlayerDistance) {
+            return; // Do nothing XD (He's so stupid)
+        }
+
         // Move toward player
         EnemyMovements.MoveTowardPlayer(c, o, c.walkspeed);
 
-        if (c.isAtChargeRange() == 0){
+        if (c.IsAtChargeRange() == 0){
             //If reached chargerange
             c.SetState(MoleStateFactory.creaChargePlayer());
         }
-        else if (c.isAtMeleeRange()) {
+        else if (c.IsAtMeleeRange()) {
             // If is not at chargerange but at meleerange
             c.SetState(MoleStateFactory.creaMeleeAttack());
         }

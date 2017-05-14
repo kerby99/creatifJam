@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Deprecated (Not used anymore)
 public class HealthEnnemy : MonoBehaviour {
 
 

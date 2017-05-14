@@ -6,9 +6,8 @@ using System.Collections;
 public abstract class EnemyMovements {
 
     public static void MoveTowardPlayer(MoleEnemyController enemy, GameObject player, float speed){
-        Vector2 dir = player.transform.position - enemy.transform.position;
-        dir = dir.normalized;
-        Vector2 velocity = dir * speed;
-        enemy.gameObject.GetComponent<Rigidbody2D>().AddForce(velocity);
+        float dir = player.transform.position.x - enemy.transform.position.x;
+        dir = (dir>0)? 1 : -1; //Transform in just a sign
+        enemy.gameObject.GetComponent<Rigidbody2D>().AddForce( new Vector2(dir * speed, 0));
     }
 }

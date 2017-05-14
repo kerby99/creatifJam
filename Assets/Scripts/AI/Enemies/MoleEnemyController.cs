@@ -13,6 +13,9 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     private GameObject player; //The naughty enemy! (Probably you if you play the game)
     protected StateBehavior<MoleEnemyController> state;
 
+    // Vision
+    public float        seePlayerDistance;
+
     // Charge data
     public bool         isCharging = false; //Public but not for unity inspector purpose
     public float        chargeSpeed;
@@ -25,8 +28,8 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 
     // Attack data (State)
     public bool         isFighting = false;
+    public bool         isAtMeleeRange;
     public float        meleeWalkSpeed;
-    public float        meleeRange;
     public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
     public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
 
@@ -40,8 +43,21 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     private bool        isAttackColdownReady = true;
 
     // Block data (Combat)
+    public bool         isBlocking;
+    public float        blockDuration;
     public float        damageNormalReduce;
-    private float       currentDamageReduction;
+    public float        damageBlockReduce;
+
+    // Health
+    private float       currentHealth;
+    public float        healthStart;
+    public bool         isAlive;
+    public float        lowLifeLevel;
+
+    // Run Away behavior (State)
+    public bool         isRunningAway;
+    public float        runAwayDuration;
+    public float        runAwaySpeed;
 
 
     // ------------------------------------------------------------------------
@@ -50,9 +66,13 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 
     // Use this for initialization
     public void Start () {
-        this.player         = GameObject.FindGameObjectWithTag("player2");
-        this.state          = MoleStateFactory.creaLook4Player();
-        this.attackType     = new MeleeHandAttackType(this);
+        this.player                 = GameObject.FindGameObjectWithTag("player2");
+        this.state                  = MoleStateFactory.creaLook4Player();
+        this.attackType             = new MeleeHandAttackType(this);
+        this.currentHealth          = this.healthStart;
+        this.isAlive                = true;
+        this.isBlocking             = false;
+        this.isRunningAway          = false;
     }
 	
 	// Update is called once per frame
@@ -71,6 +91,25 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         this.state.DoMove(this, this.player);
     }
 
+    void OnCollisionEnter2D(Collision2D other) {
+        //Enemies can overlap
+        if(other.gameObject.tag == "enemy") {
+            Physics2D.IgnoreCollision(other.collider, this.gameObject.GetComponent<Collider2D>());
+        }
+    }
+    
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject == player) {
+            this.isAtMeleeRange = true;
+        }
+    }
+    
+    void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject == player) {
+            this.isAtMeleeRange = false;
+        }
+    }
+
 
     // ------------------------------------------------------------------------
     // General functions
@@ -80,13 +119,46 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         this.attackType.DoAttack(this.player.GetComponent<Player2Controller>());
     }
 
+    public bool IsLowLife() {
+        return this.currentHealth <= this.lowLifeLevel;
+    }
+
+    public void StopRunningAway() {
+        // This function is a for state behavior. It's actually a design issue and should be handled in RunAway state
+        // However, for simplicity for this game jam, I put it here for now
+        this.SetState(MoleStateFactory.creaChargePlayer());
+    }
+
+    public void StopBlocking() {
+        // Same remarks as "StopRunningAway" -> this is a design issue
+        this.SetState(MoleStateFactory.creaMeleeAttack());
+    }
+
+    /**
+     * Call a friend for help
+     * Check on all GameObject with the specific tag for friends
+     * 
+     * return true if one friend found, otherwise, return false
+     */
+    public bool CallForHelp() {
+        // This function will ask one friend currently fighting to block player (Change state to block)
+        GameObject[] friends = GameObject.FindGameObjectsWithTag("enemy");
+        foreach(GameObject o in friends) {
+            MoleEnemyController friend = o.GetComponent<MoleEnemyController>();
+            if(friend.isFighting == true) {
+                friend.SetState(MoleStateFactory.creaBlockAttack());
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     // ------------------------------------------------------------------------
     // Getters - Setters
     // ------------------------------------------------------------------------
-    public bool isAtMeleeRange(){
-        Vector2 distvector = this.player.transform.position - this.transform.position;
-        return distvector.magnitude <= this.meleeRange;
+    public bool IsAtMeleeRange(){
+        return this.isAtMeleeRange;
     }
 
     /**
@@ -94,7 +166,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
      * 
      * return -1 if to far, -2 if to close, 0 if at range
      */
-    public int isAtChargeRange(){
+    public int IsAtChargeRange(){
         Vector2 distvect = this.player.transform.position - this.transform.position;
         if(distvect.magnitude > chargeRange){
             return -1;
@@ -117,9 +189,6 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void SetAttackPower(float value) {
         this.currentAttackDamage = value;
     }
-    public void SetDamageReduction(float value) {
-        this.currentDamageReduction = value;
-    }
 
     
     // ------------------------------------------------------------------------
@@ -138,16 +207,27 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     }
 
     public float GetDamageReduction() {
-        return this.currentDamageReduction;
+        return isBlocking ? damageBlockReduce : damageNormalReduce;
     }
 
     public float hitByTarget(AttackActor actor, float damages) {
+        Debug.Log("[HIT] Enemy receives damage (damage: "+damages+")");
         //TODO receive damage
-        return 0;
+
+        this.currentHealth = this.currentHealth - damages;
+        this.currentHealth = this.currentHealth >= 0 ? this.currentHealth : 0;
+        if (currentHealth <= 0) {
+            this.isAlive = false;
+        }
+        Debug.Log("[HIT] Enemy hit player (Damage: " + damages + ", health: "+this.currentHealth+")");
+        if (this.IsLowLife()) {
+            this.SetState(MoleStateFactory.creaRunAway());
+        }
+        //TODO Add anims
+        return damages;
     }
 
     public bool IsAlive() {
-        // TODO
-        return true;
+        return this.isAlive;
     }
 }
