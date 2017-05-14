@@ -1,15 +1,37 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class BlockAttack : MonoBehaviour {
+public class BlockAttack : StateBehavior<MoleEnemyController> {
+    private static BlockAttack singleton;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    private BlockAttack() { }
+
+    public static BlockAttack Instance() {
+        if (BlockAttack.singleton == null) {
+            BlockAttack.singleton = new BlockAttack();
+        }
+        return BlockAttack.singleton;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Override functions - StateBehavior
+    // ------------------------------------------------------------------------
+    public void DoAttack(MoleEnemyController c, GameObject o) {
+        // No attack
+    }
+
+    public void DoMove(MoleEnemyController c, GameObject o) {
+        // No movement
+    }
+
+    public void OnEnter(MoleEnemyController c) {
+        Debug.Log("[STATE]: Enter Block state");
+        c.isBlocking = true;
+        c.Invoke("StopBlocking", c.blockDuration); //Exit block state in x seconds
+    }
+
+    public void OnExit(MoleEnemyController c) {
+        Debug.Log("[STATE]: Exit Block state");
+        c.isBlocking = false;
+    }
 }
