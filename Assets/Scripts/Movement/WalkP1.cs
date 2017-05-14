@@ -56,7 +56,6 @@ public class WalkP1 : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D c)
     {
-        Debug.LogWarning(c.gameObject.tag);
 
         timePassed = 0;
         if (Input.GetButton("Jplayer1") && isFalling)

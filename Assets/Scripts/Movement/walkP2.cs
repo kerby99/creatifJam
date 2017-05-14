@@ -20,7 +20,7 @@ public class walkP2 : MonoBehaviour {
         moveH *= Time.deltaTime;
         rigid.velocity = new Vector2(moveH, rigid.velocity.y);
 
-        anim.SetFloat("Speed", Mathf.Abs(rigid.velocity.x));
+        anim.SetFloat("Speed",(rigid.velocity.x));
 
         //anim.setBool("Grounded", isGrounded);
     }
