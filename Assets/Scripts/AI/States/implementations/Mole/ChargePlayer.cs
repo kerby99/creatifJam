@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
 /**
- * Charge player
- * 
+ * Charge behavior
+ * Enemy try to charge player
+ * If is to far, walk toward player
+ * If is to close, go away to be on charge range
+ * If is on charge range.. well.. Sorry for you player
  */
 public class ChargePlayer : StateBehavior<MoleEnemyState>{
     private static ChargePlayer singleton;
@@ -23,12 +24,13 @@ public class ChargePlayer : StateBehavior<MoleEnemyState>{
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
     public void DoAttack(MoleEnemyState c, GameObject o){
-        if (c.isAtMeleeRange()){
-            c.isCharging = false; // Not charging anymore
-            // TODO Do the attack for charge
-            // TODO Change to attack state
+        // Is is charging and reached the melee range, give a freaking motherf*****g big hit in your face
+        if (c.isAtMeleeRange() && c.isCharging){
+            // TODO Do the attack for charge (Player should get mass of damage OMG!
+            this.OnExit(c);
+            c.SetState(MoleStateFactory.creaMeleeAttack());
         }
-        // Else, do nothing
+        // Else, is in range but must load it's charge (Move do the job)
     }
 
     public void DoMove(MoleEnemyState c, GameObject o){
@@ -54,7 +56,7 @@ public class ChargePlayer : StateBehavior<MoleEnemyState>{
         // If is to close, try to go away (And is not already charging)
         if(c.isAtChargeRange() == -2){
             Debug.Log("[CHARGE]: To close... (On chargerange = " + c.isAtChargeRange() + ")");
-            EnemyMovements.MoveTowardPlayer(c, o, -(c.walkspeed));
+            EnemyMovements.MoveTowardPlayer(c, o, -(c.chargeFleeSpeed));
         }
     }
 

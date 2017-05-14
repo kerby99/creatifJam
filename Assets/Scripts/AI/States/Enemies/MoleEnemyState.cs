@@ -10,18 +10,21 @@ public class MoleEnemyState : MonoBehaviour {
     protected StateBehavior<MoleEnemyState> state;
 
     // Charge data
-    public float        chargeRange;
     public float        chargeSpeed;
+    public float        chargeFleeSpeed;
+    public float        chargeRange;
     public float        chargeMinRange; //Below that, can't charge
-    public float        chargeCooldown; //Time between 2 charges
-    private float       chargeLastTimeUse;
-    public bool         isCharging; //Public but not for unity inspector purpose
+    public bool         isCharging = false; //Public but not for unity inspector purpose
 
     //Walk data
     public float        walkspeed;
 
     // Attack data
+    public float        meleeWalkSpeed;
     public float        meleeRange;
+    public bool         isFighting = false;
+    public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
+    public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
     
 
     // ------------------------------------------------------------------------
@@ -48,7 +51,7 @@ public class MoleEnemyState : MonoBehaviour {
     // ------------------------------------------------------------------------
     public bool isAtMeleeRange(){
         Vector2 distvector = this.player.transform.position - this.transform.position;
-        return this.meleeRange >= distvector.magnitude;
+        return distvector.magnitude <= this.meleeRange;
     }
 
     /**
