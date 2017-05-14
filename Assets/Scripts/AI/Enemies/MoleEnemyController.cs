@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 /**
  * General controller for a Mole Enemy
  */
-public class MoleEnemyController : MonoBehaviour {
+public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     // ------------------------------------------------------------------------
     // Attributes
     // ------------------------------------------------------------------------
@@ -23,13 +24,20 @@ public class MoleEnemyController : MonoBehaviour {
     //Walk data
     public float        walkspeed;
 
-    // Attack data
+    // Attack data (State)
     public float        meleeWalkSpeed;
     public float        meleeRange;
     public bool         isFighting = false;
     public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
     public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
-    
+
+    // Attack data (Combat)
+    private AttackType  attackType;
+    public float        attackDamage;
+
+    // Block data (Combat)
+    public float        damageNormalReduce;
+
 
     // ------------------------------------------------------------------------
     // Functions - Unity
@@ -37,8 +45,9 @@ public class MoleEnemyController : MonoBehaviour {
 
     // Use this for initialization
     public void Start () {
-        this.player = GameObject.FindGameObjectWithTag("PlayerFat");
-        this.state = MoleStateFactory.creaLook4Player();
+        this.player         = GameObject.FindGameObjectWithTag("PlayerFat");
+        this.state          = MoleStateFactory.creaLook4Player();
+        this.attackType     = new MeleeHandAttackType(this);
     }
 	
 	// Update is called once per frame
@@ -50,6 +59,7 @@ public class MoleEnemyController : MonoBehaviour {
         this.state.DoMove(this, this.player);
     }
     
+
     // ------------------------------------------------------------------------
     // Getters - Setters
     // ------------------------------------------------------------------------
@@ -78,5 +88,31 @@ public class MoleEnemyController : MonoBehaviour {
     public void SetState(StateBehavior<MoleEnemyController> state){
         this.state = state;
         this.state.OnEnter(this);
+    }
+
+    
+    // ------------------------------------------------------------------------
+    // AttackActor / AttackTarget - Override functions
+    // ------------------------------------------------------------------------
+    public GameObject GetGameObject() {
+        return this.gameObject;
+    }
+
+    public float GetDamagePower() {
+        return this.attackDamage;
+    }
+
+    public bool CanAttack() {
+        //TODO Not used (Design issue)
+        return false;
+    }
+
+    public float GetDamageReduction() {
+        return this.damageNormalReduce;
+    }
+
+    public float hit(AttackActor actor, float damages) {
+        //TODO
+        return 0;
     }
 }
