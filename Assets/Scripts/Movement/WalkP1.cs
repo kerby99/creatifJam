@@ -68,7 +68,13 @@ public class WalkP1 : MonoBehaviour
             
         }else if(c.gameObject.tag == "switch")
         {
-            //c.gameObject.
+            GameObject[] doors = GameObject.FindGameObjectsWithTag("door");
+            foreach (GameObject go in doors)
+            {
+                go.SetActive(false);
+            }
+            //GameObject door = GameObject.Find("Door");
+            //door.SetActive(false);
         }
     }
     void OnCollisionStay2D(Collision2D c)
