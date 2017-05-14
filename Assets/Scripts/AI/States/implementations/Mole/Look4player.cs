@@ -14,6 +14,7 @@ public class Look4player : StateBehavior<MoleEnemyState>{
         return Look4player.singleton;
     }
 
+
     // ------------------------------------------------------------------------
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
@@ -22,17 +23,29 @@ public class Look4player : StateBehavior<MoleEnemyState>{
     }
 
     public void DoMove(MoleEnemyState c, GameObject o){
-        Vector2 dir = o.transform.position - c.transform.position;
-        dir = dir.normalized;
-        Vector2 velocity = dir * Time.deltaTime * c.walkspeed;
-        c.gameObject.GetComponent<Rigidbody>().AddForce(velocity);
+        // Move toward player
+        EnemyMovements.MoveTowardPlayer(c, o, c.walkspeed);
+
+        //If reached chargerange
+        if (c.isAtChargeRange() == 0){
+            this.OnExit(c);
+            c.SetState(MoleStateFactory.creaChargePlayer());
+        }
+
+        // If is not at chargerange but at meleerange
+        else if (c.isAtMeleeRange()){
+            this.OnExit(c);
+            // TODO Switch to attack state
+        }
     }
 
     public void OnEnter(MoleEnemyState c){
+        Debug.Log("[STATE]: Enter Look4player state");
         // Do Nothing
     }
 
     public void OnExit(MoleEnemyState c){
+        Debug.Log("[STATE]: Exit Look4player state");
         // Do Nothing
     }
 }
