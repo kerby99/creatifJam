@@ -43,6 +43,11 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public float        damageNormalReduce;
     private float       currentDamageReduction;
 
+    // Health
+    private float       currentHealth;
+    public float        healthStart;
+    public bool         isAlive;
+
 
     // ------------------------------------------------------------------------
     // Functions - Unity
@@ -53,6 +58,8 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         this.player         = GameObject.FindGameObjectWithTag("player2");
         this.state          = MoleStateFactory.creaLook4Player();
         this.attackType     = new MeleeHandAttackType(this);
+        this.currentHealth  = this.healthStart;
+        this.isAlive        = true;
     }
 	
 	// Update is called once per frame
@@ -153,12 +160,20 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     }
 
     public float hitByTarget(AttackActor actor, float damages) {
+        Debug.Log("[HIT] Enemy receives damage (damage: "+damages+")");
         //TODO receive damage
-        return 0;
+
+        this.currentHealth = this.currentHealth - damages;
+        this.currentHealth = this.currentHealth >= 0 ? this.currentHealth : 0;
+        if (currentHealth <= 0) {
+            this.isAlive = false;
+        }
+        Debug.Log("[HIT] Enemy hit player (Damage: " + damages + ", health: "+this.currentHealth+")");
+        //TODO Add anims
+        return damages;
     }
 
     public bool IsAlive() {
-        // TODO
-        return true;
+        return this.isAlive;
     }
 }

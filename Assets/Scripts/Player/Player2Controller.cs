@@ -14,6 +14,7 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
 
     // Attack data (Combat)
     private AttackType  attackType;
+    public bool         isFighting;
     public float        meleeRange;
     public float        attackDamages;
     public float        attackColdown;
@@ -23,16 +24,9 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
     public GameObject   attackHitPoint; // Where the point impacte happens
     
     // Block data (Combat)
-    public bool         isBlocking;
+    public bool         isBlocking; // Block can be used anytime
     public float        damageNormalReduce;
     public float        damageBlockValue;
-    public float        blockMaxDuration;
-    private float       blockCurrentDuration; // Time since block has been activated
-
-    // Block Coldown data (Combat)
-    public float        blockColdown;
-    private float       blockColdownTimer;
-    private bool        isBlockColdownReady = true;
 
 
     // ------------------------------------------------------------------------
@@ -43,6 +37,7 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
     void Start () {
 	    this.isAlive                = true;
         this.isBlocking             = false;
+        this.isFighting             = false;
         this.currentHealth          = startHealth;
         this.healthSlider.maxValue  = startHealth;
         this.healthSlider.minValue  = 0;
@@ -60,20 +55,13 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
         else {
             this.isAttackColdownReady = false;
         }
-        //Update block coldown
-        this.blockColdownTimer += Time.deltaTime;
-        if (this.blockColdownTimer >= this.blockColdown) {
-            this.isBlockColdownReady = true;
-        }
-        else {
-            this.isBlockColdownReady = false;
-        }
-
-        // TODO Add attack actions according to key
-        this.isBlocking = false; //Reset
-        // Might be something like if(keyx){ this.attack(); } if(keyx2){ this.block(); }
+        
+        // Attack Actions
+        this.isBlocking = false; //Reset values
+        this.isFighting = false;
+        //Block is checked before attack so that he can't attack and block at same time
         if (Input.GetButton("Fire2")) {
-            this.block();
+            this.block(); 
         }
         else if (Input.GetButton("Fire1")) {
             this.attack();
@@ -86,20 +74,17 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
     // ------------------------------------------------------------------------
     public void attack() {
         if (this.isAttackColdownReady) {
+            this.isFighting = true;
             this.attackColdownTimer = 0;
-            // TODO find enemy
             Collider2D target = Physics2D.OverlapCircle(this.attackHitPoint.transform.position, this.meleeRange);
-            Debug.Log("COLLIDER FOR ATTACK: "+target.ToString());
-            //this.attackType.DoAttack(this.player.GetComponent<Player2Controller>());
+            AttackTarget t = target.GetComponent<AttackTarget>();
+            this.attackType.DoAttack(t);
         }
     }
 
     public void block() {
-        //TODO Add duration management
-        if (this.isBlockColdownReady) {
-            this.blockColdownTimer = 0;
-            this.isBlocking = true;
-        }
+        Debug.Log("[BLOCK] Player is blocking");
+        this.isBlocking = true;
     }
 
 
