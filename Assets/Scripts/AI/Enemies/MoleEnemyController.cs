@@ -84,6 +84,13 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void FixedUpdate(){
         this.state.DoMove(this, this.player);
     }
+
+    void OnCollisionEnter2D(Collision2D other) {
+        //Enemies can overlap
+        if(other.gameObject.tag == "enemy") {
+            Physics2D.IgnoreCollision(other.collider, this.gameObject.GetComponent<Collider2D>());
+        }
+    }
     
     void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject == player) {
