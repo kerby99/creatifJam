@@ -26,7 +26,6 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     // Attack data (State)
     public bool         isFighting = false;
     public bool         isAtMeleeRange;
-    public float        meleeRange;
     public float        meleeWalkSpeed;
     public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
     public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
