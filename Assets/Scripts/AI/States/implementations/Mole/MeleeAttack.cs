@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MeleeAttack : StateBehavior<MoleEnemyState>{
+public class MeleeAttack : StateBehavior<MoleEnemyController> {
     private static MeleeAttack singleton;
 
     private MeleeAttack() { }
@@ -17,19 +16,20 @@ public class MeleeAttack : StateBehavior<MoleEnemyState>{
     // ------------------------------------------------------------------------
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
-    public void OnEnter(MoleEnemyState c){
+    public void OnEnter(MoleEnemyController c){
         Debug.Log("[STATE]: Enter Look4player state");
+        c.SetAttackPower(c.attackMeleeDamage);
         c.isFighting = true; // Start fighting
     }
 
-    public void OnExit(MoleEnemyState c){
+    public void OnExit(MoleEnemyController c){
         Debug.Log("[STATE]: Exit Look4player state");
         c.isFighting = false;
     }
 
-    public void DoMove(MoleEnemyState c, GameObject o){
+    public void DoMove(MoleEnemyController c, GameObject o){
         // Is in range, so he fight!
-        if (c.isAtMeleeRange() == true){
+        if (c.IsAtMeleeRange() == true){
             // Chance that he flee the fight to charge again!
             if (RandomHelper.tossRandom(c.chanceChargeInMelee * Time.deltaTime)){
                 Debug.Log("[MELEE] Flee melee to charge again!!!! Yeeaaaah!");
@@ -39,7 +39,7 @@ public class MeleeAttack : StateBehavior<MoleEnemyState>{
 
         // Try to stay on range, if not, go on range
         // There is a little chance he try to charge again instead of following
-        else if (c.isAtMeleeRange() == false){
+        else if (c.IsAtMeleeRange() == false){
             if (RandomHelper.tossRandom(c.changeChargeOnPlayerFlee * Time.deltaTime)) {
                 Debug.Log("[MELEE] Player Flee and enemy try to charge again!!");
                 c.SetState(MoleStateFactory.creaChargePlayer());
@@ -51,14 +51,17 @@ public class MeleeAttack : StateBehavior<MoleEnemyState>{
         }
     }
 
-    public void DoAttack(MoleEnemyState c, GameObject o){
-        if (c.isAtMeleeRange()) {
+    public void DoAttack(MoleEnemyController c, GameObject o){
+        if (c.IsAtMeleeRange()) {
             Debug.Log("[MELEE] Is fighting");
             c.isFighting = true;
+            // Check if can attack (Because can be on coldown for example)
+            if(c.IsAttackColdownReady() == true) {
+                c.attack();
+            }
         }
         else{
             c.isFighting = false;
         }
-        // TODO Actually attack player
     }
 }
