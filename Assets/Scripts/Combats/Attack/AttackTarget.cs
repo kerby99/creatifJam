@@ -18,5 +18,10 @@ public interface AttackTarget{
      *
      * Return the actual amount of damage received
      */
-    float hit(AttackActor actor, float damages);
+    float hitByTarget(AttackActor actor, float damages);
+
+    /**
+     * Check whether target is alive (Usefull after hit to check if has die)
+     */
+    bool isAlive();
 }

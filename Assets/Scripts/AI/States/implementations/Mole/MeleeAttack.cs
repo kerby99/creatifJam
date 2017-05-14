@@ -18,6 +18,7 @@ public class MeleeAttack : StateBehavior<MoleEnemyController> {
     // ------------------------------------------------------------------------
     public void OnEnter(MoleEnemyController c){
         Debug.Log("[STATE]: Enter Look4player state");
+        c.SetAttackPower(c.attackMeleeDamage);
         c.isFighting = true; // Start fighting
     }
 
@@ -54,10 +55,13 @@ public class MeleeAttack : StateBehavior<MoleEnemyController> {
         if (c.isAtMeleeRange()) {
             Debug.Log("[MELEE] Is fighting");
             c.isFighting = true;
+            // Check if can attack (Because can be on coldown for example)
+            if(c.CanAttack() == true) {
+                c.attack();
+            }
         }
         else{
             c.isFighting = false;
         }
-        // TODO Actually attack player
     }
 }

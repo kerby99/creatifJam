@@ -24,16 +24,13 @@ public class Look4player : StateBehavior<MoleEnemyController> {
         // Move toward player
         EnemyMovements.MoveTowardPlayer(c, o, c.walkspeed);
 
-        //If reached chargerange
         if (c.isAtChargeRange() == 0){
-            this.OnExit(c);
+            //If reached chargerange
             c.SetState(MoleStateFactory.creaChargePlayer());
         }
-
-        // If is not at chargerange but at meleerange
-        else if (c.isAtMeleeRange()){
-            this.OnExit(c);
-            // TODO Switch to attack state
+        else if (c.isAtMeleeRange()) {
+            // If is not at chargerange but at meleerange
+            c.SetState(MoleStateFactory.creaMeleeAttack());
         }
     }
 

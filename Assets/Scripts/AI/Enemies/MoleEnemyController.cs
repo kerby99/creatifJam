@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 /**
@@ -15,28 +14,31 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     protected StateBehavior<MoleEnemyController> state;
 
     // Charge data
+    public bool         isCharging = false; //Public but not for unity inspector purpose
     public float        chargeSpeed;
     public float        chargeFleeSpeed;
     public float        chargeRange;
     public float        chargeMinRange; //Below that, can't charge
-    public bool         isCharging = false; //Public but not for unity inspector purpose
 
     //Walk data
     public float        walkspeed;
 
     // Attack data (State)
+    public bool         isFighting = false;
     public float        meleeWalkSpeed;
     public float        meleeRange;
-    public bool         isFighting = false;
     public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
     public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
 
     // Attack data (Combat)
     private AttackType  attackType;
-    public float        attackDamage;
+    public float        attackMeleeDamage;
+    public float        attackChargeDamage;
+    private float       currentAttackDamage;
 
     // Block data (Combat)
     public float        damageNormalReduce;
+    private float       currentDamageReduction;
 
 
     // ------------------------------------------------------------------------
@@ -45,7 +47,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 
     // Use this for initialization
     public void Start () {
-        this.player         = GameObject.FindGameObjectWithTag("PlayerFat");
+        this.player         = GameObject.FindGameObjectWithTag("player2");
         this.state          = MoleStateFactory.creaLook4Player();
         this.attackType     = new MeleeHandAttackType(this);
     }
@@ -58,7 +60,15 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void FixedUpdate(){
         this.state.DoMove(this, this.player);
     }
-    
+
+
+    // ------------------------------------------------------------------------
+    // General functions
+    // ------------------------------------------------------------------------
+    public void attack() {
+        this.attackType.DoAttack(this.player.GetComponent<Player2Controller>());
+    }
+
 
     // ------------------------------------------------------------------------
     // Getters - Setters
@@ -85,9 +95,19 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         return 0;
     }
 
+    // Set current AI state
     public void SetState(StateBehavior<MoleEnemyController> state){
+        this.state.OnExit(this);
         this.state = state;
         this.state.OnEnter(this);
+    }
+
+    // It's not an exact strategy pattern: simplified here for the game jam
+    public void SetAttackPower(float value) {
+        this.currentAttackDamage = value;
+    }
+    public void SetDamageReduction(float value) {
+        this.currentDamageReduction = value;
     }
 
     
@@ -99,20 +119,25 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     }
 
     public float GetDamagePower() {
-        return this.attackDamage;
+        return this.currentAttackDamage;
     }
 
     public bool CanAttack() {
         //TODO Not used (Design issue)
-        return false;
+        return true;
     }
 
     public float GetDamageReduction() {
-        return this.damageNormalReduce;
+        return this.currentDamageReduction;
     }
 
-    public float hit(AttackActor actor, float damages) {
-        //TODO
+    public float hitByTarget(AttackActor actor, float damages) {
+        //TODO receive damage
         return 0;
+    }
+
+    public bool isAlive() {
+        // TODO
+        return true;
     }
 }

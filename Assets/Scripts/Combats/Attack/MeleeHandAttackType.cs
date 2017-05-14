@@ -11,6 +11,6 @@ public class MeleeHandAttackType : AttackType {
 
     public float DoAttack(AttackTarget target) {
         float damage = this.attackActor.GetDamagePower() - target.GetDamageReduction();
-        return target.hit(this.attackActor, damage);
+        return target.hitByTarget(this.attackActor, damage);
     }
 }
