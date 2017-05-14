@@ -23,5 +23,5 @@ public interface AttackTarget{
     /**
      * Check whether target is alive (Usefull after hit to check if has die)
      */
-    bool isAlive();
+    bool IsAlive();
 }

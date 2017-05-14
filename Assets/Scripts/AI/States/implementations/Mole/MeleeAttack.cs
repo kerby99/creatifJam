@@ -56,7 +56,7 @@ public class MeleeAttack : StateBehavior<MoleEnemyController> {
             Debug.Log("[MELEE] Is fighting");
             c.isFighting = true;
             // Check if can attack (Because can be on coldown for example)
-            if(c.CanAttack() == true) {
+            if(c.IsAttackColdownReady() == true) {
                 c.attack();
             }
         }

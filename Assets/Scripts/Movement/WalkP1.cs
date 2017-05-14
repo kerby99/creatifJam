@@ -18,9 +18,7 @@ public class WalkP1 : MonoBehaviour
     void Awake()
     {
         player1 = GameObject.FindGameObjectWithTag("player1");
-        Debug.LogWarning(player1);
         player1Health = GetComponent<HealthBarP1>();
-        Debug.LogWarning(player1Health);
         rigid = GetComponent<Rigidbody2D>();
     }
 
@@ -52,7 +50,6 @@ public class WalkP1 : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D c)
     {
-        Debug.LogWarning(c.gameObject.tag);
         timePassed = 0;
         if (Input.GetButton("Jplayer1") && isFalling)
         {

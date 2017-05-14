@@ -19,5 +19,5 @@ public interface AttackActor {
      * Check whether actor can attack now 
      * (Or is busy doing other things, like coding for a game jam)
      */
-    bool CanAttack();
+    bool IsAttackColdownReady();
 }

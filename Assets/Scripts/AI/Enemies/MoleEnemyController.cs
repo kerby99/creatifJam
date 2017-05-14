@@ -35,6 +35,9 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public float        attackMeleeDamage;
     public float        attackChargeDamage;
     private float       currentAttackDamage;
+    public float        attackColdown;
+    private float       attackColdownTimer;
+    private bool        isAttackColdownReady = true;
 
     // Block data (Combat)
     public float        damageNormalReduce;
@@ -54,6 +57,13 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 	
 	// Update is called once per frame
 	public void Update () {
+        this.attackColdownTimer += Time.deltaTime;
+        if(this.attackColdownTimer >= this.attackColdown) {
+            this.isAttackColdownReady = true;
+        }
+        else {
+            this.isAttackColdownReady = false;
+        }
         this.state.DoAttack(this, this.player);
 	}
 
@@ -66,6 +76,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     // General functions
     // ------------------------------------------------------------------------
     public void attack() {
+        this.attackColdownTimer = 0;
         this.attackType.DoAttack(this.player.GetComponent<Player2Controller>());
     }
 
@@ -122,9 +133,8 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         return this.currentAttackDamage;
     }
 
-    public bool CanAttack() {
-        //TODO Not used (Design issue)
-        return true;
+    public bool IsAttackColdownReady() {
+        return this.isAttackColdownReady;
     }
 
     public float GetDamageReduction() {
@@ -136,7 +146,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         return 0;
     }
 
-    public bool isAlive() {
+    public bool IsAlive() {
         // TODO
         return true;
     }
