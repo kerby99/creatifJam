@@ -13,6 +13,9 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     private GameObject player; //The naughty enemy! (Probably you if you play the game)
     protected StateBehavior<MoleEnemyController> state;
 
+    // Vision
+    public float        seePlayerDistance;
+
     // Charge data
     public bool         isCharging = false; //Public but not for unity inspector purpose
     public float        chargeSpeed;
