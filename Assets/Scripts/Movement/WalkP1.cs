@@ -71,7 +71,7 @@ public class WalkP1 : MonoBehaviour
             
         }else if(c.gameObject.tag == "switch")
         {
-            c.gameObject.
+            //c.gameObject.
         }
     }
     void OnCollisionStay2D(Collision2D c)
