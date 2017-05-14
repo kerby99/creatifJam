@@ -9,6 +9,6 @@ public abstract class EnemyMovements {
         Vector2 dir = player.transform.position - enemy.transform.position;
         dir = dir.normalized;
         Vector2 velocity = dir * speed;
-        enemy.gameObject.GetComponent<Rigidbody>().AddForce(velocity);
+        enemy.gameObject.GetComponent<Rigidbody2D>().AddForce(velocity);
     }
 }
