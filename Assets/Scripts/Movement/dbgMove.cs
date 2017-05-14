@@ -2,12 +2,12 @@
 using System.Collections;
 
 public class dbgMove : MonoBehaviour {
-    private Rigidbody rg;
+    private Rigidbody2D rg;
     public float speed;
 
 	// Use this for initialization
 	void Start () {
-        this.rg = this.GetComponent<Rigidbody>();
+        this.rg = this.GetComponent<Rigidbody2D>();
 	}
 	
 	// Update is called once per frame

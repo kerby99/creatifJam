@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerEffetcs : MonoBehaviour {
+public class BlockAttack : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

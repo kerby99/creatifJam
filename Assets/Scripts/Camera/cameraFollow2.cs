@@ -78,7 +78,6 @@ public class cameraFollow2 : MonoBehaviour{
 
         size += this.edgeDistance;
         size = Mathf.Max(size, this.zoomMinDistance);
-        Debug.Log("SIZE: " + size);
         return size;
     }
 }
