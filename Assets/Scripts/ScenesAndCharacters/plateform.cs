@@ -22,7 +22,6 @@ public class plateform : MonoBehaviour {
         {
             transform.position = new Vector3(transform.position.x + platformWidth + distanceBet, transform.position.y, transform.position.z);
             indrand = Random.Range(0, 7);
-            Debug.LogWarning(indrand);
             Instantiate(thePlatform[indrand], transform.position, transform.rotation);
         }
 	}
