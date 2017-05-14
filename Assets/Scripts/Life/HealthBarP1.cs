@@ -67,7 +67,7 @@ public class HealthBarP1 : MonoBehaviour {
     {
         isDead = true;
         SceneManager.LoadScene("GameOver");
-        p1.enabled = false;
-        p2.enabled = false;
+        //p1.enabled = false;
+        //p2.enabled = false;
     }
 }

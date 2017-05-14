@@ -56,6 +56,8 @@ public class WalkP1 : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D c)
     {
+        Debug.LogWarning(c.gameObject.tag);
+
         timePassed = 0;
         if (Input.GetButton("Jplayer1") && isFalling)
         {
@@ -70,14 +72,36 @@ public class WalkP1 : MonoBehaviour
 
         if (c.gameObject.tag == "pic")
         {
-            Debug.LogWarning(player1Health);
             
-        }else if(c.gameObject.tag == "switch")
+
+        }
+        else if(c.gameObject.tag == "switch")
         {
             GameObject[] doors = GameObject.FindGameObjectsWithTag("door");
             foreach (GameObject go in doors)
             {
                 go.SetActive(false);
+            }
+
+            GameObject[] wall = GameObject.FindGameObjectsWithTag("wall");
+
+            foreach (GameObject go in wall)
+            {
+                go.SetActive(false);
+            }
+        }
+        if(c.gameObject.tag == "invisibleSwitch")
+        {
+            GameObject[] wall = GameObject.FindGameObjectsWithTag("wall");
+            foreach (GameObject go in wall)
+            {
+                go.SetActive(true);
+            }
+
+            GameObject[] doors = GameObject.FindGameObjectsWithTag("door");
+            foreach (GameObject go in doors)
+            {
+                go.SetActive(true);
             }
         }
     }

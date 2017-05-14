@@ -10,9 +10,9 @@ public class plateform : MonoBehaviour {
     private int indrand;
 
     private float platformWidth;
+
     // Use this for initialization
     void Start () {
-
         platformWidth = thePlatform[0].GetComponent<BoxCollider2D>().size.x;
 	}
 	
