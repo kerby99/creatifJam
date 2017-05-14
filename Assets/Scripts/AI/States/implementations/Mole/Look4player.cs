@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
-public class Look4player : StateBehavior<MoleEnemyState>{
+public class Look4player : StateBehavior<MoleEnemyController> {
     private static Look4player singleton;
 
     private Look4player() { }
@@ -18,11 +16,11 @@ public class Look4player : StateBehavior<MoleEnemyState>{
     // ------------------------------------------------------------------------
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
-    public void DoAttack(MoleEnemyState c, GameObject o){
+    public void DoAttack(MoleEnemyController c, GameObject o){
         //Cannot attack
     }
 
-    public void DoMove(MoleEnemyState c, GameObject o){
+    public void DoMove(MoleEnemyController c, GameObject o){
         // Move toward player
         EnemyMovements.MoveTowardPlayer(c, o, c.walkspeed);
 
@@ -39,12 +37,12 @@ public class Look4player : StateBehavior<MoleEnemyState>{
         }
     }
 
-    public void OnEnter(MoleEnemyState c){
+    public void OnEnter(MoleEnemyController c){
         Debug.Log("[STATE]: Enter Look4player state");
         // Do Nothing
     }
 
-    public void OnExit(MoleEnemyState c){
+    public void OnExit(MoleEnemyController c){
         Debug.Log("[STATE]: Exit Look4player state");
         // Do Nothing
     }

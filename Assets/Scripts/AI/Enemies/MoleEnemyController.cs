@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 
-public class MoleEnemyState : MonoBehaviour {
+
+/**
+ * General controller for a Mole Enemy
+ */
+public class MoleEnemyController : MonoBehaviour {
     // ------------------------------------------------------------------------
     // Attributes
     // ------------------------------------------------------------------------
 
     // General data
     private GameObject player; //The naughty enemy! (Probably you if you play the game)
-    protected StateBehavior<MoleEnemyState> state;
+    protected StateBehavior<MoleEnemyController> state;
 
     // Charge data
     public float        chargeSpeed;
@@ -71,7 +75,7 @@ public class MoleEnemyState : MonoBehaviour {
         return 0;
     }
 
-    public void SetState(StateBehavior<MoleEnemyState> state){
+    public void SetState(StateBehavior<MoleEnemyController> state){
         this.state = state;
         this.state.OnEnter(this);
     }
