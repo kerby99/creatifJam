@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Deprecated (Not used anymore)
 public class HealthBarP1 : MonoBehaviour {
 
     public int startingHealth;                            // The amount of health the player starts the game with.

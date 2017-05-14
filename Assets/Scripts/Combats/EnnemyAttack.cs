@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-//DEPRECATED (Not used atm)
+// Deprecated (Not used anymore)
 public class EnnemyAttack : MonoBehaviour {
 
     public float timeBetweenAttacks = 0.5f;     // The time in seconds between each attack.
