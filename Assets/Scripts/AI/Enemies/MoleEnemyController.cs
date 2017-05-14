@@ -47,6 +47,12 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     private float       currentHealth;
     public float        healthStart;
     public bool         isAlive;
+    public float        lowLifeLevel;
+
+    // Run Away behavior (State)
+    public bool         isRunningAway;
+    public float        runAwayDuration;
+    public float        runAwaySpeed;
 
 
     // ------------------------------------------------------------------------
@@ -60,6 +66,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         this.attackType     = new MeleeHandAttackType(this);
         this.currentHealth  = this.healthStart;
         this.isAlive        = true;
+        this.isRunningAway  = false;
     }
 	
 	// Update is called once per frame
@@ -97,6 +104,16 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void attack() {
         this.attackColdownTimer = 0;
         this.attackType.DoAttack(this.player.GetComponent<Player2Controller>());
+    }
+
+    public bool IsLowLife() {
+        return this.currentHealth <= this.lowLifeLevel;
+    }
+
+    public void StopRunningAway() {
+        // This function is a for state behavior. It's actually a design issue and should be handled in RunAway state
+        // However, for simplicity for this game jam, I put it here for now
+        this.SetState(MoleStateFactory.creaChargePlayer());
     }
 
 
@@ -169,6 +186,9 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
             this.isAlive = false;
         }
         Debug.Log("[HIT] Enemy hit player (Damage: " + damages + ", health: "+this.currentHealth+")");
+        if (this.IsLowLife()) {
+            this.SetState(MoleStateFactory.creaRunAway());
+        }
         //TODO Add anims
         return damages;
     }

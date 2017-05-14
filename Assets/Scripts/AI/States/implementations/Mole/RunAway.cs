@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class RunAway : StateBehavior<MoleEnemyController> {
     private static RunAway singleton;
@@ -17,18 +18,20 @@ public class RunAway : StateBehavior<MoleEnemyController> {
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
     public void DoAttack(MoleEnemyController c, GameObject o){
-        // TODO
+        // Can't attack
     }
 
-    public void DoMove(MoleEnemyController c, GameObject o){
-        // TODO
+    public void DoMove(MoleEnemyController c, GameObject o) {
+        // negative value because flee the player
+        EnemyMovements.MoveTowardPlayer(c, o, -(c.runAwaySpeed));
     }
 
     public void OnEnter(MoleEnemyController c){
-        // TODO
+        c.isRunningAway = true;
+        c.Invoke("StopRunningAway", c.runAwayDuration);
     }
 
     public void OnExit(MoleEnemyController c){
-        // TODO
+        c.isRunningAway = false;
     }
 }
