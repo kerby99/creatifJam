@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
     // ------------------------------------------------------------------------
@@ -104,10 +105,17 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
         this.healthSlider.value = this.currentHealth;
         if (currentHealth <= 0) {
             this.isAlive = false;
+            gameOver();
         }
         Debug.Log("[HIT] Enemy hit player (Damage: "+damages+")");
         //TODO Add anims
         return damages;
+    }
+
+    void gameOver()
+    {
+        
+        SceneManager.LoadScene("GameOver");
     }
 
     public bool IsAlive() {
