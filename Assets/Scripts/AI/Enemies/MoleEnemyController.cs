@@ -53,6 +53,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public float        healthStart;
     public bool         isAlive;
     public float        lowLifeLevel;
+    public float        timeBeforeDeadRemoved;
 
     // Run Away behavior (State)
     public bool         isRunningAway;
@@ -222,6 +223,10 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         Debug.Log("[HIT] Enemy hit player (Damage: " + damages + ", health: "+this.currentHealth+")");
         if (this.IsLowLife()) {
             this.SetState(MoleStateFactory.creaRunAway());
+        }
+        if(this.IsAlive() == false) {
+            Debug.Log("[DEAD] Enemy just die");
+            Destroy(this.gameObject, this.timeBeforeDeadRemoved);
         }
         //TODO Add anims
         return damages;
