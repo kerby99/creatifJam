@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+//DEPRECATED (Not used atm)
 public class EnnemyAttack : MonoBehaviour {
 
     public float timeBetweenAttacks = 0.5f;     // The time in seconds between each attack.
@@ -21,7 +21,6 @@ public class EnnemyAttack : MonoBehaviour {
         // Setting up the references.
         player = GameObject.FindGameObjectWithTag("Player");
         player1Health = player.GetComponent<HealthBarP1>();
-        player2Health = player.GetComponent<HealthBarP2>();
         enemyHealth = GetComponent<HealthEnnemy>();
         anim = GetComponent<Animator>();
     }

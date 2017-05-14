@@ -7,7 +7,7 @@
  * If is to close, go away to be on charge range
  * If is on charge range.. well.. Sorry for you player
  */
-public class ChargePlayer : StateBehavior<MoleEnemyState>{
+public class ChargePlayer : StateBehavior<MoleEnemyController> {
     private static ChargePlayer singleton;
 
     private ChargePlayer() { }
@@ -23,18 +23,17 @@ public class ChargePlayer : StateBehavior<MoleEnemyState>{
     // ------------------------------------------------------------------------
     // Override functions - StateBehavior
     // ------------------------------------------------------------------------
-    public void DoAttack(MoleEnemyState c, GameObject o){
+    public void DoAttack(MoleEnemyController c, GameObject o){
         // Is is charging and reached the melee range, give a freaking motherf*****g big hit in your face
-        if (c.isAtMeleeRange() && c.isCharging){
-            // TODO Do the attack for charge (Player should get mass of damage OMG!
-            this.OnExit(c);
+        if (c.isAtMeleeRange() && c.isCharging) {
+            Debug.Log("[CHARGE]: charge just reached it's destination: poor player...");
+            c.attack(); // Take that ugly player!
             c.SetState(MoleStateFactory.creaMeleeAttack());
         }
         // Else, is in range but must load it's charge (Move do the job)
     }
 
-    public void DoMove(MoleEnemyState c, GameObject o){
-
+    public void DoMove(MoleEnemyController c, GameObject o){
         // If is already chargin, continue
         if (c.isCharging) {
             EnemyMovements.MoveTowardPlayer(c, o, c.chargeSpeed);
@@ -60,12 +59,13 @@ public class ChargePlayer : StateBehavior<MoleEnemyState>{
         }
     }
 
-    public void OnEnter(MoleEnemyState c){
+    public void OnEnter(MoleEnemyController c){
         Debug.Log("[STATE]: Enter ChargePlayer state");
+        c.SetAttackPower(c.attackChargeDamage);
         c.isCharging = false;
     }
 
-    public void OnExit(MoleEnemyState c){
+    public void OnExit(MoleEnemyController c){
         Debug.Log("[STATE]: Exit ChargePlayer state");
         c.isCharging = false;
     }
