@@ -11,9 +11,16 @@ public class WalkP1 : MonoBehaviour
     public float timeLimit = 1;
     public float timePassed = 0;
     Rigidbody2D rigid;
+    HealthBarP1 player1Health;
+    GameObject player1;
     // Use this for initialization
-    void Start()
+
+    void Awake()
     {
+        player1 = GameObject.FindGameObjectWithTag("player1");
+        Debug.LogWarning(player1);
+        player1Health = GetComponent<HealthBarP1>();
+        Debug.LogWarning(player1Health);
         rigid = GetComponent<Rigidbody2D>();
     }
 
@@ -45,6 +52,7 @@ public class WalkP1 : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D c)
     {
+        Debug.LogWarning(c.gameObject.tag);
         timePassed = 0;
         if (Input.GetButton("Jplayer1") && isFalling)
         {
@@ -56,6 +64,15 @@ public class WalkP1 : MonoBehaviour
         }
         isFalling = false;
         rigid.velocity = new Vector2(rigid.velocity.x, 0);
+
+        if (c.gameObject.tag == "pic")
+        {
+            Debug.LogWarning(player1Health);
+            
+        }else if(c.gameObject.tag == "switch")
+        {
+            c.gameObject.SetActive(false);
+        }
     }
     void OnCollisionStay2D(Collision2D c)
     {
