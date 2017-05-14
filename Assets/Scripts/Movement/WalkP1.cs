@@ -47,6 +47,12 @@ public class WalkP1 : MonoBehaviour
         {
             isFalling = true;
         }
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("door");
+        foreach (GameObject go in doors)
+        {
+            go.SetActive(true);
+        }
+
     }
     void OnCollisionEnter2D(Collision2D c)
     {
@@ -73,8 +79,6 @@ public class WalkP1 : MonoBehaviour
             {
                 go.SetActive(false);
             }
-            //GameObject door = GameObject.Find("Door");
-            //door.SetActive(false);
         }
     }
     void OnCollisionStay2D(Collision2D c)
