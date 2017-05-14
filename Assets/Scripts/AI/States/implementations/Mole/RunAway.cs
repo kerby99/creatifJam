@@ -28,7 +28,8 @@ public class RunAway : StateBehavior<MoleEnemyController> {
 
     public void OnEnter(MoleEnemyController c){
         c.isRunningAway = true;
-        c.Invoke("StopRunningAway", c.runAwayDuration);
+        c.CallForHelp();
+        c.Invoke("StopRunningAway", c.runAwayDuration); //To exit this state after x seconds
     }
 
     public void OnExit(MoleEnemyController c){

@@ -83,7 +83,6 @@ public class Player2Controller : MonoBehaviour, AttackTarget, AttackActor {
     }
 
     public void block() {
-        Debug.Log("[BLOCK] Player is blocking");
         this.isBlocking = true;
     }
 

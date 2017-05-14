@@ -40,8 +40,10 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     private bool        isAttackColdownReady = true;
 
     // Block data (Combat)
+    public bool         isBlocking;
+    public float        blockDuration;
     public float        damageNormalReduce;
-    private float       currentDamageReduction;
+    public float        damageBlockReduce;
 
     // Health
     private float       currentHealth;
@@ -61,12 +63,13 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 
     // Use this for initialization
     public void Start () {
-        this.player         = GameObject.FindGameObjectWithTag("player2");
-        this.state          = MoleStateFactory.creaLook4Player();
-        this.attackType     = new MeleeHandAttackType(this);
-        this.currentHealth  = this.healthStart;
-        this.isAlive        = true;
-        this.isRunningAway  = false;
+        this.player                 = GameObject.FindGameObjectWithTag("player2");
+        this.state                  = MoleStateFactory.creaLook4Player();
+        this.attackType             = new MeleeHandAttackType(this);
+        this.currentHealth          = this.healthStart;
+        this.isAlive                = true;
+        this.isBlocking             = false;
+        this.isRunningAway          = false;
     }
 	
 	// Update is called once per frame
@@ -123,6 +126,30 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
         this.SetState(MoleStateFactory.creaChargePlayer());
     }
 
+    public void StopBlocking() {
+        // Same remarks as "StopRunningAway" -> this is a design issue
+        this.SetState(MoleStateFactory.creaMeleeAttack());
+    }
+
+    /**
+     * Call a friend for help
+     * Check on all GameObject with the specific tag for friends
+     * 
+     * return true if one friend found, otherwise, return false
+     */
+    public bool CallForHelp() {
+        // This function will ask one friend currently fighting to block player (Change state to block)
+        GameObject[] friends = GameObject.FindGameObjectsWithTag("enemy");
+        foreach(GameObject o in friends) {
+            MoleEnemyController friend = o.GetComponent<MoleEnemyController>();
+            if(friend.isFighting == true) {
+                friend.SetState(MoleStateFactory.creaBlockAttack());
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     // ------------------------------------------------------------------------
     // Getters - Setters
@@ -159,9 +186,6 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void SetAttackPower(float value) {
         this.currentAttackDamage = value;
     }
-    public void SetDamageReduction(float value) {
-        this.currentDamageReduction = value;
-    }
 
     
     // ------------------------------------------------------------------------
@@ -180,7 +204,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     }
 
     public float GetDamageReduction() {
-        return this.currentDamageReduction;
+        return isBlocking ? damageBlockReduce : damageNormalReduce;
     }
 
     public float hitByTarget(AttackActor actor, float damages) {
