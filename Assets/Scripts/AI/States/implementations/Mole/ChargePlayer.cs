@@ -25,7 +25,7 @@ public class ChargePlayer : StateBehavior<MoleEnemyController> {
     // ------------------------------------------------------------------------
     public void DoAttack(MoleEnemyController c, GameObject o){
         // Is is charging and reached the melee range, give a freaking motherf*****g big hit in your face
-        if (c.isAtMeleeRange() && c.isCharging) {
+        if (c.IsAtMeleeRange() && c.isCharging) {
             Debug.Log("[CHARGE]: charge just reached it's destination: poor player...");
             c.attack(); // Take that ugly player!
             c.SetState(MoleStateFactory.creaMeleeAttack());
@@ -40,21 +40,21 @@ public class ChargePlayer : StateBehavior<MoleEnemyController> {
         }
 
         // If is a charge range, chaaaarge!!
-        if (c.isAtChargeRange() == 0) {
+        if (c.IsAtChargeRange() == 0) {
             c.isCharging = true;
-            Debug.Log("[CHARGE]: Start charging!!!! (On chargerange = " + c.isAtChargeRange() + ")");
+            Debug.Log("[CHARGE]: Start charging!!!! (On chargerange = " + c.IsAtChargeRange() + ")");
             EnemyMovements.MoveTowardPlayer(c, o, c.chargeSpeed);
         }
 
         // If is to far, move toward player
-        if(c.isAtChargeRange() == -1) {
-            Debug.Log("[CHARGE]: To far... (On chargerange = " + c.isAtChargeRange() + ")");
+        if(c.IsAtChargeRange() == -1) {
+            Debug.Log("[CHARGE]: To far... (On chargerange = " + c.IsAtChargeRange() + ")");
             EnemyMovements.MoveTowardPlayer(c, o, c.walkspeed);
         }
 
         // If is to close, try to go away (And is not already charging)
-        if(c.isAtChargeRange() == -2){
-            Debug.Log("[CHARGE]: To close... (On chargerange = " + c.isAtChargeRange() + ")");
+        if(c.IsAtChargeRange() == -2){
+            Debug.Log("[CHARGE]: To close... (On chargerange = " + c.IsAtChargeRange() + ")");
             EnemyMovements.MoveTowardPlayer(c, o, -(c.chargeFleeSpeed));
         }
     }

@@ -25,8 +25,9 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
 
     // Attack data (State)
     public bool         isFighting = false;
-    public float        meleeWalkSpeed;
+    public bool         isAtMeleeRange;
     public float        meleeRange;
+    public float        meleeWalkSpeed;
     public int          chanceChargeInMelee; //Will in melee fight, change that he will leave the fight to charge again
     public int          changeChargeOnPlayerFlee; // Chance enemy will charge instead of following player if he flee
 
@@ -70,6 +71,18 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     public void FixedUpdate(){
         this.state.DoMove(this, this.player);
     }
+    
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject == player) {
+            this.isAtMeleeRange = true;
+        }
+    }
+    
+    void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject == player) {
+            this.isAtMeleeRange = false;
+        }
+    }
 
 
     // ------------------------------------------------------------------------
@@ -84,9 +97,8 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
     // ------------------------------------------------------------------------
     // Getters - Setters
     // ------------------------------------------------------------------------
-    public bool isAtMeleeRange(){
-        Vector2 distvector = this.player.transform.position - this.transform.position;
-        return distvector.magnitude <= this.meleeRange;
+    public bool IsAtMeleeRange(){
+        return this.isAtMeleeRange;
     }
 
     /**
@@ -94,7 +106,7 @@ public class MoleEnemyController : MonoBehaviour, AttackActor, AttackTarget {
      * 
      * return -1 if to far, -2 if to close, 0 if at range
      */
-    public int isAtChargeRange(){
+    public int IsAtChargeRange(){
         Vector2 distvect = this.player.transform.position - this.transform.position;
         if(distvect.magnitude > chargeRange){
             return -1;
